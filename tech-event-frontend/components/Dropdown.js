@@ -1,4 +1,3 @@
-// components/Dropdown.js
 import { useState } from 'react';
 
 const Dropdown = ({ label, options, onSelect }) => {
