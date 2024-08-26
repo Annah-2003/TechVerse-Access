@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/client';
@@ -6,7 +5,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EventCard from '../components/EventCard';
 import Dropdown from '../components/Dropdown';
-import CheckoutForm from '../../components/CheckoutForm';
 
 const backendUrl = 'http://localhost:8000/api';
 

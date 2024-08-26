@@ -1,5 +1,3 @@
-// pages/login.js
-
 import { signIn, useSession } from 'next-auth/client';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -29,6 +27,7 @@ export default function Login() {
     }
   };
 
+  
   return (
     <div>
       <h1>Login</h1>
