@@ -1,14 +1,19 @@
-// pages/index.js
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/client';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import EventCard from '../components/EventCard';
+import Dropdown from '../components/Dropdown';
+import CheckoutForm from '../../components/CheckoutForm';
 
 const backendUrl = 'http://localhost:8000/api';
 
 export default function Home() {
   const [session] = useSession();
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     if (session) {
@@ -24,24 +29,26 @@ export default function Home() {
     }
   }, [session]);
 
+  const handleSelect = (event) => {
+    setSelectedEvent(event.target.value);
+  };
+
   if (!session) {
     return <div>Please login to view events.</div>;
   }
 
   return (
     <div>
+      <Header />
       <h1>Recommended Events</h1>
+      <Dropdown 
+        options={events.map(event => ({ label: event.title, value: event.id }))} 
+        onSelect={handleSelect}
+      />
       {events.map((event) => (
-        <div key={event.id}>
-          <h2>{event.title}</h2>
-          <p>{event.description}</p>
-          <p>Date: {new Date(event.date).toLocaleString()}</p>
-          <p>Location: {event.location}</p>
-          <p>Price: ${event.price}</p>
-          <button>Add to Favorites</button>
-          <button>Buy Ticket</button>
-        </div>
+        <EventCard key={event.id} event={event} />
       ))}
+      <Footer />
     </div>
   );
 }
