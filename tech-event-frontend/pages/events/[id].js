@@ -1,5 +1,3 @@
-// pages/events/[id].js
-
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import { useEffect, useState } from 'react';
