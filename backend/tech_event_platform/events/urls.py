@@ -1,9 +1,12 @@
-from django.urls import path,include
+# events/urls.py
+
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import InterestViewSet, EventViewSet, CommunityViewSet, FavoriteViewSet,PaymentViewSet
+from .views import InterestViewSet, EventViewSet, CommunityViewSet, FavoriteViewSet, PaymentViewSet
 
 router = DefaultRouter()
 router.register(r'interests', InterestViewSet, basename='interest')
+router.register(r'events', EventViewSet, basename='event')
 router.register(r'communities', CommunityViewSet, basename='community')
 router.register(r'favorites', FavoriteViewSet, basename='favorite')
 router.register(r'payments', PaymentViewSet, basename='payment')
