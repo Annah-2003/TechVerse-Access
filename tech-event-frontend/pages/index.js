@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSession } from 'next-auth/react'; // Updated import path
+import { useSession } from 'next-auth/react'; // Ensure the import is correct
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EventCard from '../components/EventCard';
@@ -9,7 +9,7 @@ import Dropdown from '../components/Dropdown';
 const backendUrl = 'http://localhost:8000/api';
 
 export default function Home() {
-  const [session] = useSession();
+  const { data: session, status } = useSession();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
