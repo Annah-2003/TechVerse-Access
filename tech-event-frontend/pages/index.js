@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react'; // Updated import path
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EventCard from '../components/EventCard';
