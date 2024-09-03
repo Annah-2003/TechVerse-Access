@@ -24,12 +24,12 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Register user
+      // Registers user
       await axios.post(`${backendUrl}/auth/registration/`, {
         ...formData,
       });
 
-      // Set user interests
+      // Sets user interests
       const profileResponse = await axios.get(`${backendUrl}/auth/user/`, {
         headers: {
           Authorization: `Token ${res.data.key}`,
@@ -48,7 +48,7 @@ export default function SignUp() {
         }
       );
 
-      // Redirect to login
+      // Redirect user to login
       router.push('/login');
     } catch (error) {
       console.error(error);
@@ -88,7 +88,7 @@ export default function SignUp() {
           }
           required
         />
-        <label>Select Your Interests:</label>
+        <label>Please Select Your Interests:</label>
         <select
           multiple
           value={selectedInterests}
