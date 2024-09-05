@@ -1,37 +1,32 @@
-import { signIn, useSession } from 'next-auth/client';
 import { useState } from 'react';
+import { signIn } from 'next-auth/react'; // Updated import for next-auth
 import { useRouter } from 'next/router';
 
 export default function Login() {
-  const [session, loading] = useSession();
   const router = useRouter();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  if (session) {
-    router.push('/');
-  }
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await signIn('credentials', {
-      redirect: false,
+      redirect: false, // Prevent redirect on error
       email,
       password,
     });
+
     if (res.error) {
-      alert(res.error);
+      setErrorMessage(res.error);
     } else {
-      router.push('/');
+      router.push('/'); // Redirect to homepage on successful login
     }
   };
 
-  
   return (
     <div>
       <h1>Login</h1>
-      <button onClick={() => signIn('google')}>Sign in with Google</button>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
