@@ -1,103 +1,86 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+// pages/signup.js
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import styles from './signup.module.css'; // Importing CSS module for styling
 
-const backendUrl = 'http://localhost:8000/api';
-
-export default function SignUp() {
+export default function Signup() {
   const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [interests, setInterests] = useState([]);
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const [formData, setFormData] = useState({
-    email: '',
-    password1: '',
-    password2: '',
-  });
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    axios.get(`${backendUrl}/interests/`).then((response) => {
-      setInterests(response.data);
-    });
-  }, []);
+  const interestOptions = ['Technology', 'Programming', 'AI', 'Gaming', 'Art'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password1 !== formData.password2) {
-      setErrorMessage('Passwords do not match');
-      return;
-    }
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, interests }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    try {
-      const res = await axios.post(`${backendUrl}/auth/registration/`, {
-        email: formData.email,
-        password: formData.password1,
-      });
-
-      await axios.put(
-        `${backendUrl}/userprofiles/${res.data.user.id}/`,
-        { interests: selectedInterests },
-        { headers: { Authorization: `Token ${res.data.token}` } }
-      );
-
+    if (res.ok) {
       router.push('/login');
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('Error during sign-up');
+    } else {
+      const data = await res.json();
+      setErrorMessage(data.message);
     }
   };
 
+  const handleInterestChange = (e) => {
+    const selectedInterest = e.target.value;
+    setInterests((prev) =>
+      prev.includes(selectedInterest)
+        ? prev.filter((i) => i !== selectedInterest)
+        : [...prev, selectedInterest]
+    );
+  };
+
   return (
-    <div className={styles.container}>
-      <h1 className={styles.heading}>Sign Up</h1>
-      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.inputGroup}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-          />
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-3xl font-bold">Sign Up</h1>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="border p-2 rounded w-full mb-4"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="border p-2 rounded w-full mb-4"
+        />
+
+        <h2 className="text-lg mb-2">Select your interests:</h2>
+        <div className="flex flex-wrap gap-4">
+          {interestOptions.map((interest, index) => (
+            <label key={index} className="flex items-center">
+              <input
+                type="checkbox"
+                value={interest}
+                onChange={handleInterestChange}
+                className="mr-2"
+              />
+              {interest}
+            </label>
+          ))}
         </div>
-        <div className={styles.inputGroup}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={formData.password1}
-            onChange={(e) => setFormData({ ...formData, password1: e.target.value })}
-            required
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={formData.password2}
-            onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
-            required
-          />
-        </div>
-        <label className={styles.label}>Please Select Your Interests:</label>
-        <div className={styles.inputGroup}>
-          <select
-            className={styles.select}
-            multiple
-            value={selectedInterests}
-            onChange={(e) =>
-              setSelectedInterests(Array.from(e.target.selectedOptions, (option) => option.value))
-            }
-          >
-            {interests.map((interest) => (
-              <option key={interest.id} value={interest.id}>
-                {interest.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button className={styles.submitButton} type="submit">Sign Up</button>
+
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-lg mt-4"
+        >
+          Sign Up
+        </button>
       </form>
     </div>
   );

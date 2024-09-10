@@ -1,9 +1,10 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}', // Ensure Tailwind scans all pages
+    './components/**/*.{js,ts,jsx,tsx}', // Ensure Tailwind scans all components
+  ],
   theme: {
     extend: {},
   },
   plugins: [],
 }
-
