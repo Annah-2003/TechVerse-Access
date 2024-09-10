@@ -1,79 +1,86 @@
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react'; // Import useSession from next-auth
+import { useSession } from 'next-auth/react'; 
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EventCard from '../components/EventCard';
 import Dropdown from '../components/Dropdown';
+import { motion } from 'framer-motion';
 
-const backendUrl = 'http://localhost:8000/api'; // Backend API URL
+const backendUrl = 'http://localhost:8000/api'; 
 
-// The default export must be a single function that returns a React component.
 export default function Home() {
-  const { data: session, status } = useSession(); // Authentication data from next-auth
-  const [events, setEvents] = useState([]); // State to store fetched events
-  const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
-  const router = useRouter(); // Router instance for navigation
+  const { data: session, status } = useSession();
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const router = useRouter();
 
-  // Fetch events when user is authenticated (session is present)
   useEffect(() => {
     if (session) {
       axios
         .get(`${backendUrl}/events/`, {
           headers: {
-            Authorization: `Token ${session.accessToken}`, // Include token in header for authentication
+            Authorization: `Bearer ${session.accessToken}`,
           },
         })
         .then((response) => {
-          setEvents(response.data); // Set events from API response
+          setEvents(response.data);
         })
         .catch((error) => {
-          console.error("Error fetching events:", error); // Log any errors
+          console.error('Error fetching events:', error);
         });
     }
   }, [session]);
 
-  // Handle event selection from dropdown
   const handleSelect = (event) => {
     setSelectedEvent(event.target.value);
   };
 
-  // Show loading spinner while session is being fetched
   if (status === 'loading') return <div>Loading...</div>;
 
-  // If the user is not authenticated, prompt them to login or sign up
   if (!session) {
     return (
-      <div>
-        <h1>Welcome to Event Manager</h1>
-        <button onClick={() => router.push('/login')}>Login</button>
-        <button onClick={() => router.push('/signup')}>Sign Up</button>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 to-indigo-700 text-white">
+        <h1 className="text-4xl font-extrabold">Welcome to TechVerse-Access</h1>
+        <motion.button
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-6 rounded-lg mt-6 hover:bg-purple-700"
+          whileHover={{ scale: 1.1 }}
+          onClick={() => router.push('/login')}
+        >
+          Login
+        </motion.button>
+        <motion.button
+          className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-lg mt-4 hover:bg-teal-600"
+          whileHover={{ scale: 1.1 }}
+          onClick={() => router.push('/signup')}
+        >
+          Sign Up
+        </motion.button>
       </div>
     );
   }
 
-  // Render events once user is authenticated
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen">
       <Header />
-      <h1>Welcome back, {session.user.name}!</h1> {/* Greeting the user */}
-      <h2>Recommended Events</h2>
-      
-      {/* Dropdown for selecting an event */}
-      <Dropdown 
-        options={events.map(event => ({ label: event.title, value: event.id }))} 
-        onSelect={handleSelect}
-      />
-      
-      {/* Display selected event details if any */}
-      {selectedEvent && <p>You selected event ID: {selectedEvent}</p>}
+      <main className="p-6">
+        <h1 className="text-3xl font-bold text-gray-800">Welcome back, {session.user.name}!</h1>
+        <h2 className="text-xl mt-4 text-gray-700">Recommended Events</h2>
+        
+        <Dropdown
+          options={events.map((event) => ({ label: event.title, value: event.id }))}
+          onSelect={handleSelect}
+        />
 
-      {/* Map through events and display each using EventCard */}
-      {events.map((event) => (
-        <EventCard key={event.id} event={event} />
-      ))}
+        {selectedEvent && <p>You selected event ID: {selectedEvent}</p>}
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      </main>
       <Footer />
     </div>
   );

@@ -1,5 +1,3 @@
-// pages/api/auth/[...nextauth].js
-
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
 import axios from 'axios';
@@ -10,7 +8,7 @@ export default NextAuth({
   providers: [
     Providers.Credentials({
       name: 'Credentials',
-      authorize: async (credentials) => {
+      async authorize(credentials) {
         try {
           const user = await axios.post(`${backendUrl}/auth/login/`, {
             email: credentials.email,
@@ -25,19 +23,14 @@ export default NextAuth({
         }
       },
     }),
-    Providers.Google({
-      clientId: 'your_google_client_id',
-      clientSecret: 'your_google_client_secret',
-    }),
   ],
   session: {
     jwt: true,
   },
-  jwt: {},
   callbacks: {
     async jwt(token, user) {
       if (user) {
-        token.accessToken = user.key;
+        token.accessToken = user.token; // Assuming the token from the backend is called 'token'
       }
       return token;
     },
