@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { motion } from 'framer-motion'; // Import motion from framer-motion
 
 export default function Login() {
   const router = useRouter();

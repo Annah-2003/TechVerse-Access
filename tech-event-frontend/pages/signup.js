@@ -9,7 +9,7 @@ export default function Signup() {
   const [interests, setInterests] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const interestOptions = ['Technology', 'Programming', 'AI', 'Gaming', 'Art'];
+  const interestOptions = ['Web development', 'Mobile development', 'AI & Machine Learning', 'Game development', 'Cyber Security', 'Internet of Things(IoT)','UI/UX','Blockchain and Cryptocurrency','Robotics', 'AR/VR','Data Science'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
