@@ -8,6 +8,7 @@ import EventCard from '../components/EventCard';
 import Dropdown from '../components/Dropdown';
 import { motion } from 'framer-motion';
 
+// Backend API URL
 const backendUrl = 'http://localhost:8000/api'; 
 
 export default function Home() {
@@ -41,22 +42,63 @@ export default function Home() {
 
   if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 to-indigo-700 text-white">
-        <h1 className="text-4xl font-extrabold">Welcome to TechVerse-Access</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 text-white overflow-hidden">
+        {/* Background Animation */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-800 via-purple-600 to-pink-500 opacity-30 animate-pulse z-0"></div>
+        
+        <h1 className="text-5xl font-extrabold text-neon-blue z-10">Welcome to TechVerse-Access</h1>
+        
         <motion.button
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-6 rounded-lg mt-6 hover:bg-purple-700"
-          whileHover={{ scale: 1.1 }}
+          className="mt-10 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-8 rounded-full neon-effect shadow-lg hover:shadow-neon-blue hover:scale-110 transition duration-300"
+          whileHover={{ scale: 1.2 }}
           onClick={() => router.push('/login')}
         >
           Login
         </motion.button>
+        
         <motion.button
-          className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-lg mt-4 hover:bg-teal-600"
-          whileHover={{ scale: 1.1 }}
+          className="mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-8 rounded-full neon-effect shadow-lg hover:shadow-neon-green hover:scale-110 transition duration-300"
+          whileHover={{ scale: 1.2 }}
           onClick={() => router.push('/signup')}
         >
           Sign Up
         </motion.button>
+
+        <style jsx>{`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+          
+          .text-neon-blue {
+            color: #00f6ff;
+            text-shadow: 0 0 5px rgba(0, 246, 255, 0.7), 0 0 15px rgba(0, 246, 255, 0.5);
+            font-family: 'Orbitron', sans-serif;
+          }
+
+          .neon-effect {
+            transition: box-shadow 0.3s ease;
+          }
+
+          .neon-effect:hover {
+            box-shadow: 0 0 20px rgba(0, 246, 255, 0.7), 0 0 30px rgba(0, 246, 255, 0.5);
+          }
+
+          .hover\:shadow-neon-blue:hover {
+            box-shadow: 0 0 15px #00f6ff, 0 0 30px #00f6ff;
+          }
+
+          .hover\:shadow-neon-green:hover {
+            box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99;
+          }
+
+          .animate-pulse {
+            animation: pulseAnimation 10s infinite;
+          }
+
+          @keyframes pulseAnimation {
+            0% { opacity: 0.4; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.4; }
+          }
+        `}</style>
       </div>
     );
   }
@@ -67,7 +109,7 @@ export default function Home() {
       <main className="p-6">
         <h1 className="text-3xl font-bold text-gray-800">Welcome back, {session.user.name}!</h1>
         <h2 className="text-xl mt-4 text-gray-700">Recommended Events</h2>
-        
+
         <Dropdown
           options={events.map((event) => ({ label: event.title, value: event.id }))}
           onSelect={handleSelect}
