@@ -6,7 +6,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EventCard from '../components/EventCard';
 import Dropdown from '../components/Dropdown';
-import { motion } from 'framer-motion';
 
 // Backend API URL
 const backendUrl = 'http://localhost:8000/api'; 
@@ -17,6 +16,7 @@ export default function Home() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const router = useRouter();
 
+  // Fetch events from the backend if the session exists
   useEffect(() => {
     if (session) {
       axios
@@ -38,32 +38,43 @@ export default function Home() {
     setSelectedEvent(event.target.value);
   };
 
+  // If session status is loading, show a loading screen
   if (status === 'loading') return <div>Loading...</div>;
 
+  // If user is not logged in, show login and signup buttons
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 text-white overflow-hidden">
         {/* Background Animation */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-800 via-purple-600 to-pink-500 opacity-30 animate-pulse z-0"></div>
-        
+
         <h1 className="text-5xl font-extrabold text-neon-blue z-10">Welcome to TechVerse-Access</h1>
-        
-        <motion.button
+
+        {/* Login Button */}
+        <button
           className="mt-10 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-8 rounded-full neon-effect shadow-lg hover:shadow-neon-blue hover:scale-110 transition duration-300"
-          whileHover={{ scale: 1.2 }}
-          onClick={() => router.push('/login')}
+          onClick={(e) => {
+            e.preventDefault();
+            console.log('Login button clicked');
+            router.push('/login');
+          }}
         >
           Login
-        </motion.button>
-        
-        <motion.button
+        </button>
+
+        {/* Sign-Up Button */}
+        <button
           className="mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-8 rounded-full neon-effect shadow-lg hover:shadow-neon-green hover:scale-110 transition duration-300"
-          whileHover={{ scale: 1.2 }}
-          onClick={() => router.push('/signup')}
+          onClick={(e) => {
+            e.preventDefault();
+            console.log('Sign-Up button clicked');
+            router.push('/signup');
+          }}
         >
           Sign Up
-        </motion.button>
+        </button>
 
+        {/* Inline styles for neon effect and animations */}
         <style jsx>{`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
           
@@ -98,11 +109,17 @@ export default function Home() {
             50% { opacity: 0.6; }
             100% { opacity: 0.4; }
           }
+
+          button {
+            pointer-events: auto; /* Ensures the button is clickable */
+            z-index: 9999; /* Ensures the button appears above background elements */
+          }
         `}</style>
       </div>
     );
   }
 
+  // If user is logged in, display events and personalized greeting
   return (
     <div className="bg-gray-100 min-h-screen">
       <Header />
