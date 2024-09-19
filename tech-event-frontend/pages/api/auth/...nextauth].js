@@ -62,7 +62,7 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: '/login', // Custom sign-in page
-    error: '/auth/error', // Error redirect page (optional)
+    signIn: '/login', 
+    error: '/auth/error', 
   },
 });

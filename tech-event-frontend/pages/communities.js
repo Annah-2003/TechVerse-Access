@@ -65,21 +65,21 @@ export default function Communities() {
   }
 
   return (
-    <div>
-      <h1>Recommended Communities</h1>
-      <ul>
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-800 to-blue-700 text-white">
+      <h1 className="text-3xl font-bold my-6">Recommended Communities</h1>
+      <ul className="w-full max-w-md space-y-4">
         {communities.map((community) => (
-          <li key={community.id}>
+          <li key={community.id} className="p-4 bg-gray-900 rounded-lg shadow-md">
             <div>
-              <h2>{community.name}</h2>
-              <p>{community.description}</p>
+              <h2 className="text-xl font-bold">{community.name}</h2>
+              <p className="text-gray-400">{community.description}</p>
               <button
                 onClick={() => handleCommunitySelection(community.id)}
-                style={{
-                  backgroundColor: selectedCommunities.includes(community.id)
-                    ? 'lightgreen'
-                    : 'lightgray',
-                }}
+                className={`mt-2 px-4 py-2 rounded-lg ${
+                  selectedCommunities.includes(community.id)
+                    ? 'bg-green-600'
+                    : 'bg-gray-700'
+                } hover:bg-green-700 transition-all`}
               >
                 {selectedCommunities.includes(community.id)
                   ? 'Deselect'
@@ -89,7 +89,12 @@ export default function Communities() {
           </li>
         ))}
       </ul>
-      <button onClick={handleNext}>Next</button>
+      <button
+        onClick={handleNext}
+        className="mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2 rounded-lg hover:scale-105 transition-all"
+      >
+        Next
+      </button>
     </div>
   );
 }

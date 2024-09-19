@@ -1,5 +1,5 @@
 // pages/_app.js
-import '../styles/globals.css';  // Import Tailwind CSS here
+import '../styles/globals.css'; 
 import { SessionProvider } from "next-auth/react";
 
 function MyApp({ Component, pageProps }) {
