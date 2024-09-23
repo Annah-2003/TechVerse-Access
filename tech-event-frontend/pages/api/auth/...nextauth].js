@@ -2,8 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:8000/api';
-
+const backendUrl = 'http://localhost:8000/api'
 export default NextAuth({
   providers: [
     CredentialsProvider({

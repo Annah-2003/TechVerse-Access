@@ -13,7 +13,7 @@ export default function Signup() {
   const interestOptions = [
     'Web development', 'Mobile development', 'AI & Machine Learning',
     'Game development', 'Cyber Security', 'Internet of Things (IoT)',
-    'UI/UX', 'Blockchain and Cryptocurrency', 'Robotics', 'AR/VR', 'Data Science'
+    'UI/UX Design', 'Blockchain and Cryptocurrency', 'Robotics', 'AR/VR', 'Data Science'
   ];
 
   const handleSubmit = async (e) => {
