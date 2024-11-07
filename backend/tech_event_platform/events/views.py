@@ -1,26 +1,35 @@
-# events/views.py
-
 from rest_framework import viewsets, permissions
-from .models import Interest, Event, Community, Favorite
-from .serializers import InterestSerializer, EventSerializer, CommunitySerializer, FavoriteSerializer
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import HttpResponse
+from .models import Interest, Event, Community, Favorite
+from .serializers import InterestSerializer, EventSerializer, CommunitySerializer, FavoriteSerializer
 import stripe
 from django.conf import settings
-from django.http import HttpResponse
 
+# Initialize Stripe with your secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def home(request):
+    """Home view for the Tech Event Platform."""
     return HttpResponse("Welcome to the Tech Event Platform!")
 
+@api_view(['GET'])
+def session_view(request):
+    """Endpoint to check the session and return user info."""
+    if request.user.is_authenticated:
+        return Response({'user': {'email': request.user.email}}, status=status.HTTP_200_OK)
+    return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
 class InterestViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for handling Interests."""
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
     permission_classes = [permissions.AllowAny]
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for handling Events."""
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -30,6 +39,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         return Event.objects.filter(interests__in=interests).distinct()
 
 class CommunityViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for handling Communities."""
     serializer_class = CommunitySerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -39,6 +49,7 @@ class CommunityViewSet(viewsets.ReadOnlyModelViewSet):
         return Community.objects.filter(interests__in=interests).distinct()
 
 class FavoriteViewSet(viewsets.ModelViewSet):
+    """ViewSet for handling User Favorites."""
     serializer_class = FavoriteSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -61,6 +72,7 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['delete'])
     def remove(self, request, pk=None):
+        """Remove an event from favorites."""
         user = request.user
         try:
             favorite = Favorite.objects.get(user=user, event__id=pk)
@@ -70,10 +82,12 @@ class FavoriteViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Favorite does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 class PaymentViewSet(viewsets.ViewSet):
+    """ViewSet for handling Payments."""
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['post'])
     def create_payment_intent(self, request):
+        """Create a payment intent for an event."""
         event_id = request.data.get('event_id')
         try:
             event = Event.objects.get(id=event_id)

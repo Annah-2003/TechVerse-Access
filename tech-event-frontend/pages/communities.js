@@ -13,12 +13,9 @@ export default function Communities() {
 
   useEffect(() => {
     if (session) {
-      // Fetch communities from the backend
       axios
         .get(`${backendUrl}/communities/`, {
-          headers: {
-            Authorization: `Token ${session.accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${session.accessToken}` },
         })
         .then((response) => {
           setCommunities(response.data);
@@ -30,68 +27,50 @@ export default function Communities() {
   }, [session]);
 
   const handleCommunitySelection = (communityId) => {
-    // Toggle selection of communities
-    if (selectedCommunities.includes(communityId)) {
-      setSelectedCommunities(selectedCommunities.filter(id => id !== communityId));
-    } else {
-      setSelectedCommunities([...selectedCommunities, communityId]);
-    }
+    setSelectedCommunities((prev) =>
+      prev.includes(communityId) ? prev.filter((id) => id !== communityId) : [...prev, communityId]
+    );
   };
 
   const handleNext = () => {
-    // Assuming you send selectedCommunities to the backend
     if (selectedCommunities.length > 0) {
-      axios.post(`${backendUrl}/communities/select`, {
-        communities: selectedCommunities,
-      }, {
-        headers: {
-          Authorization: `Token ${session.accessToken}`,
-        },
-      })
-      .then(() => {
-        // After successful submission, redirect to the events page
-        router.push('/events');
-      })
-      .catch((error) => {
-        console.error('Error submitting selected communities:', error);
-      });
+      axios
+        .post(
+          `${backendUrl}/communities/select`,
+          { communities: selectedCommunities },
+          { headers: { Authorization: `Bearer ${session.accessToken}` } }
+        )
+        .then(() => router.push('/events'))
+        .catch((error) => console.error('Error submitting selected communities:', error));
     } else {
       alert('Please select at least one community to proceed.');
     }
   };
 
-  if (!session) {
-    return <div>Please login to view communities.</div>;
-  }
+  if (!session) return <div>Please login to view communities.</div>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-800 to-blue-700 text-white">
-      <h1 className="text-3xl font-bold my-6">Recommended Communities</h1>
-      <ul className="w-full max-w-md space-y-4">
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-800 to-blue-700 text-white py-10">
+      <h1 className="text-3xl font-bold mb-8">Recommended Communities</h1>
+      <div className="w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {communities.map((community) => (
-          <li key={community.id} className="p-4 bg-gray-900 rounded-lg shadow-md">
-            <div>
-              <h2 className="text-xl font-bold">{community.name}</h2>
-              <p className="text-gray-400">{community.description}</p>
-              <button
-                onClick={() => handleCommunitySelection(community.id)}
-                className={`mt-2 px-4 py-2 rounded-lg ${
-                  selectedCommunities.includes(community.id)
-                    ? 'bg-green-600'
-                    : 'bg-gray-700'
-                } hover:bg-green-700 transition-all`}
-              >
-                {selectedCommunities.includes(community.id)
-                  ? 'Deselect'
-                  : 'Select'}
-              </button>
-            </div>
-          </li>
+          <div
+            key={community.id}
+            onClick={() => handleCommunitySelection(community.id)}
+            className={`p-4 rounded-lg transition-all cursor-pointer ${
+              selectedCommunities.includes(community.id)
+                ? 'bg-green-600 scale-105'
+                : 'bg-gray-700 hover:bg-gray-600'
+            }`}
+          >
+            <h2 className="text-lg font-semibold">{community.name}</h2>
+            <p className="text-sm">{community.description}</p>
+          </div>
         ))}
-      </ul>
+      </div>
       <button
         onClick={handleNext}
-        className="mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2 rounded-lg hover:scale-105 transition-all"
+        className="mt-10 bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-all"
       >
         Next
       </button>
