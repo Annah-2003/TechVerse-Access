@@ -1,19 +1,25 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework import status
 from django.http import HttpResponse
 from .models import Interest, Event, Community, Favorite
 from .serializers import InterestSerializer, EventSerializer, CommunitySerializer, FavoriteSerializer
-import stripe
 from django.conf import settings
+from django.http import JsonResponse
 
-# Initialize Stripe with your secret key
-stripe.api_key = settings.STRIPE_SECRET_KEY
+import logging
+
+
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 def home(request):
     """Home view for the Tech Event Platform."""
     return HttpResponse("Welcome to the Tech Event Platform!")
+
+def error_view(request):
+    return JsonResponse({'message': 'An error occurred.'}, status=400)
 
 @api_view(['GET'])
 def session_view(request):
@@ -91,13 +97,28 @@ class PaymentViewSet(viewsets.ViewSet):
         event_id = request.data.get('event_id')
         try:
             event = Event.objects.get(id=event_id)
+            amount = int(event.price * 100)  # Convert price to cents
+            if amount <= 0:
+                return Response({'error': 'Invalid event price'}, status=status.HTTP_400_BAD_REQUEST)
+
             intent = stripe.PaymentIntent.create(
-                amount=int(event.price * 100),  # amount in cents
+                amount=amount,  # amount in cents
                 currency='usd',
                 metadata={'user_id': request.user.id, 'event_id': event.id},
             )
             return Response({'client_secret': intent.client_secret})
+        
         except Event.DoesNotExist:
             return Response({'error': 'Event does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+@api_view(['GET'])
+def session_view(request):
+    if request.user.is_authenticated:
+        return Response({"isAuthenticated": True, "user": request.user.username})
+    return Response({"isAuthenticated": False})
+def error_view(request):
+    return Response({"error": "Authentication error occurred"}, status=400)
+    

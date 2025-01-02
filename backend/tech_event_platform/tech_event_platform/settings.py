@@ -3,7 +3,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -15,9 +14,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Third-party apps
     'django.contrib.sites',
     'rest_framework',
@@ -49,10 +46,11 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # Add this line
+    'allauth.account.middleware.AccountMiddleware',  
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'tech_event_platform.urls'
 
@@ -74,10 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tech_event_platform.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -85,10 +80,7 @@ DATABASES = {
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -104,33 +96,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-CORS_ALLOW_ALL_ORIGINS = True 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # Additional configurations
-
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
@@ -147,6 +125,15 @@ REST_FRAMEWORK = {
 # Email configurations for allauth (using console backend for testing)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Stripe configuration (replace with your actual keys)
-STRIPE_PUBLIC_KEY = 'pk_test_51Pq9LdADhle4d0XZA8p2Z5BORjQmnvDaRSFzDozsND0Wayg22akjK6L7ndYX5gpVxyoX6XzAAIq3KAr4KtTuCYK300eJl551y3'
-STRIPE_SECRET_KEY = 'sk_test_51Pq9LdADhle4d0XZKqEQkOiNhppRqeWgmaBBMWmqRNjTDxlpGDkviT8J8ChvV9Tm7ORRFeXjgDSNS5bqkYmhRwFg00KHtI7J56'
+INSTALLED_APPS += [
+    'django_extensions',
+]
+
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Optional: Restrict allowed origins (replace "http://localhost:3000" with your frontend URL if needed)
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
